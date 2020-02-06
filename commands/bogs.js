@@ -1,6 +1,3 @@
-// wordpos
-const WordPOS = require('wordpos'),
-      wordpos = new WordPOS();
 
 /*======================================================*
        /$$                                    
@@ -24,7 +21,16 @@ const WordPOS = require('wordpos'),
 *     Add command to add(emojiID) to config
 */
 
-exports.run = async (client, message, args, level) => {
+// wordpos
+const WordPOS = require('wordpos'),
+  wordpos = new WordPOS();
+// Do random stuff better
+const Random = require('random-js').Random,
+  r = new Random();
+// Load manual emoji list
+const emoji = require('../config/emoji.json');
+
+exports.run = async (client, message) => {
 
   // Fetch !command message and previous message
   message.channel.fetchMessages({ limit: 2 })
@@ -40,19 +46,19 @@ exports.run = async (client, message, args, level) => {
 
         // Get number of words in message
         // const messageLength = lastMessage.length;
-        
+
         // Create empty new message for bot to send
         const newMessage = []
 
         // Chance to turn emoji
-        const nounChance = .2,
-              verbChance = .25,
-              adjChance = .3;
+        const nounChance = .20,
+          verbChance = .25,
+          adjChance = .30;
 
         // Grab random emoji from emoji.json based on type
         const grabRandEmoji = (emojiType) => {
           const keys = Object.keys(emojiType),
-            randKey = keys[Math.floor(Math.random() * keys.length)],
+            randKey = r.pick(keys, 0, keys.length),
             randEmoji = emojiType[randKey];
           return randEmoji;
         };
@@ -76,16 +82,16 @@ exports.run = async (client, message, args, level) => {
           // Check if previous word was transformed before continuing
           else if (!replacedWords.includes(checkIndex)) {
             if (wordpos.isNoun(word)) {
-              if (Math.random() < nounChance) {
+              if (r.bool(nounChance)) {
                 // Add index of transformed word to the replacedWords array
                 replacedWords.push(wordIndex);
                 newMessage.push(grabRandEmoji(emoji.noun));
               } else if (wordpos.isVerb(word)) {
-                if (Math.random() < verbChance) {
+                if (r.bool(verbChance)) {
                   replacedWords.push(wordIndex);
                   newMessage.push(grabRandEmoji(emoji.verb));
                 } else if (wordpos.isAdjective(word)) {
-                  if (Math.random() < adjChance) {
+                  if (r.bool(adjChance)) {
                     replacedWords.push(wordIndex);
                     newMessage.push(grabRandEmoji(emoji.adj));
                   } else {
@@ -104,7 +110,7 @@ exports.run = async (client, message, args, level) => {
         //const replacedLen = replacedWords.length;
 
         message.channel.send(newMessage.join(" ")).catch(console.error);
-        
+
         //message.channel.send(newMessage.join(" ") + " | Total: " + messageLength + " | Replaced: " + replacedLen);
 
         //console.log(newMessage.join(" ") + " | Total: " + messageLength + " | Replaced: " + replacedLen);
@@ -119,7 +125,7 @@ exports.conf = {
 };
 
 exports.help = {
-  name: "bogs",
+  name: "bbogs",
   category: "bogs",
   description: "play with some bogs",
   usage: "bogs"

@@ -111,7 +111,40 @@ module.exports = (client) => {
     } catch (e) {
       return `Roll broken: ${e}`;
     }
-  }
+  };
+
+  /*
+  // Breakout transformWord for bogs
+  client.transformWord = async (word) => {
+    // wordpos
+    const WordPOS = require('wordpos'),
+      wordpos = new WordPOS();
+    const Random = require('random-js').Random,
+      r = new Random();
+    // Load manual emoji list
+    const emoji = require("../config/emoji.json");
+
+    const randomEmoji = (type) => {
+      if (type == 'all') {
+        candidates = emoji.values();
+        const selectEmoji = r.picker(candidates, 0, candidates.length);
+        return selectEmoji;
+      }
+    }
+
+    try {
+
+      // If word had definitions for all 3 then pull any random emoji
+      if (wordpos.isNoun(word) && wordpos.isAdjective(word) && wordpos.isVerb(word)) {
+        const replacement = randomEmoji(word);
+        return replacement;
+      }
+
+    } catch (e) {
+      return `transformWord broken: ${e}`;
+    }
+  };
+  */
 
 
   // Neat little thing to fix case of string
