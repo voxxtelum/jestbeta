@@ -98,10 +98,18 @@ module.exports = (client) => {
           // If integers has 2 args
           const intMin = integers[0];
           const intMax = integers[1];
-          const roll = random.integer(intMin, intMax);
 
-          const messageOut = `${messageAuthor} rolls ${roll} (${intMin}-${intMax})`
-          return messageOut;
+          if (intMin > intMax) {
+            const roll = random.integer(intMax, intMin);
+            const messageOut = `${messageAuthor} rolls ${roll} (${intMax}-${intMin})`;
+            return messageOut;
+          } else {
+            const roll = random.integer(intMin, intMax);
+            const messageOut = `${messageAuthor} rolls ${roll} (${intMin}-${intMax})`;
+            return messageOut;
+          }
+
+
         } else {
           // If integers has > 2 args
           messageOut = `Hey ${messageAuthor}, you have to give me 0, 1 or 2 number ya dingus`;
