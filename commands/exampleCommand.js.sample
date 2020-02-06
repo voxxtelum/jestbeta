@@ -1,0 +1,36 @@
+/*========================= TODO ========================*
+
+
+*/
+
+// What is the command listening for?
+exports.run = async (client, message, args) => {
+
+  // What does the bot do when event happens?
+
+};
+
+// Properties of each command
+// Used to check requirements in events/message.js
+
+exports.conf = {
+  // Enbable/disable command
+  enabled: true,
+  // set true if only usable in normal channels
+  // false lets bot respond to DMs
+  guildOnly: true,
+  // bot also reacts to these commands
+  aliases: [],
+};
+
+exports.help = {
+  // name of command that triggers response
+  name: "laff",
+  // bot category, might want to use this somehow later
+  // with a !help command to tell people how to use it
+  category: "Miscellaneous",
+  // same as above; pretty explanatory
+  description: "have a laff",
+  // also same as above, just useful for !help command
+  usage: "laff"
+};

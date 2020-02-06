@@ -27,9 +27,11 @@ client.commands = new Enmap();
 client.aliases = new Enmap();
 client.settings = new Enmap({ name: "settings" });
 
+// is that an anoymous function uwu?
 const init = async () => {
 
   // Load commands from ./commands
+  // Only loads with .js extension
   const cmdFiles = await readdir("./commands/");
   client.logger.log(`Loading ${cmdFiles.length} commands.`);
   cmdFiles.forEach(c => {
@@ -38,16 +40,14 @@ const init = async () => {
     if (response) console.log(response);
   });
 
-  // Then we load events, which will include our message and ready event.
-  const evtFiles = await readdir("./events/");
-  client.logger.log(`Loading ${evtFiles.length} events.`);
-  evtFiles.forEach(file => {
+  // Load events 
+  const eventFiles = await readdir("./events/");
+  client.logger.log(`Loading ${eventFiles.length} events.`);
+  eventFiles.forEach(file => {
     const eventName = file.split(".")[0];
     client.logger.log(`Loading Event: ${eventName}`);
     const event = require(`./events/${file}`);
-    // Bind the client to any event, before the existing arguments
-    // provided by the discord.js event. 
-    // This line is awesome by the way. Just sayin'.
+    // Bind client to event eg message or ready events
     client.on(eventName, event.bind(null, client));
   });
 

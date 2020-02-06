@@ -9,17 +9,17 @@ module.exports = (client) => {
     "adminRole": "Administrator",
     "systemNotice": "true",
     "welcomeChannel": "welcome",
-    "welcomeMessage": "Say hello to {{user}}, everyone! We all need a warm welcome sometimes :D",
+    "welcomeMessage": "Say hello to {{user}}, everyone! We all need a warm welcome sometimes xD",
     "welcomeEnabled": "false"
   };
 
   client.getSettings = (guild) => {
     client.settings.ensure("default", defaultSettings);
-    if(!guild) return client.settings.get("default");
+    if (!guild) return client.settings.get("default");
     const guildConf = client.settings.get(guild.id) || {};
-    return ({...client.settings.get("default"), ...guildConf});
+    return ({ ...client.settings.get("default"), ...guildConf });
   };
-  
+
   // Load command from ./commands
   // Command name is set in exports.help
   client.loadCommand = (commandName) => {
@@ -47,7 +47,7 @@ module.exports = (client) => {
       command = client.commands.get(client.aliases.get(commandName));
     }
     if (!command) return `The command \`${commandName}\` doesn"t seem to exist, nor is it an alias. Try again!`;
-    
+
     if (command.shutdown) {
       await command.shutdown(client);
     }
@@ -62,11 +62,61 @@ module.exports = (client) => {
     return false;
   };
 
-// Misc functions
+  // Misc functions
 
-// Neat little thing to fix case of string
+  // Turning !roll into something I can use anywhere
+  client.rollNumbers = async (message, args) => {
+    const messageAuthor = `<@${message.author.id}>`;
+    // Let's get some random number shit
+    const Random = require('random-js').Random;
+    const random = new Random();
+
+    try {
+      if (!args.length) {
+        // Basic /roll with no arguments
+        const roll = random.integer(1, 100);
+        const messageOut = `${messageAuthor} rolls ${roll} (1-100)`;
+        return messageOut;
+      } else {
+        // Joins args
+        const longArgs = args.join(" ");
+        // Create array of all integers in argument
+        const integers = longArgs.match(/[0-9]+/g);
+        // If no integers were found
+        if (!integers) {
+          const messageOut = `Hey ${messageAuthor}, there no number`;
+          return messageOut;
+        } else if (integers.length == 1) {
+          // If only 1 integer was found
+          const intMax = Math.abs(parseInt(integers[0]));
+          const roll = random.integer(1, intMax);
+
+          const messageOut = `${messageAuthor} rolls ${roll} (1-${intMax})`;
+          return messageOut;
+
+        } else if (integers.length == 2) {
+          // If integers has 2 args
+          const intMin = integers[0];
+          const intMax = integers[1];
+          const roll = random.integer(intMin, intMax);
+
+          const messageOut = `${messageAuthor} rolls ${roll} (${intMin}-${intMax})`
+          return messageOut;
+        } else {
+          // If integers has > 2 args
+          messageOut = `Hey ${messageAuthor}, you have to give me 0, 1 or 2 number ya dingus`;
+          return messageOut;
+        }
+      }
+    } catch (e) {
+      return `Roll broken: ${e}`;
+    }
+  }
+
+
+  // Neat little thing to fix case of string
   Object.defineProperty(String.prototype, "toProperCase", {
-    value: function() {
+    value: function () {
       return this.replace(/([^\W_]+[^\s-]*) */g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
     }
   });
@@ -74,7 +124,7 @@ module.exports = (client) => {
   // <Array>.random() returns a single random element from an array
   // [1, 2, 3, 4, 5].random() can return 1, 2, 3, 4 or 5.
   Object.defineProperty(Array.prototype, "random", {
-    value: function() {
+    value: function () {
       return this[Math.floor(Math.random() * this.length)];
     }
   });
